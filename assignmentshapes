@@ -1,0 +1,87 @@
+package com.example.demo;
+
+import javafx.application.Application;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.Scene;
+
+import javafx.stage.Stage;
+
+import java.util.Random;
+
+public class Assignment2 extends Application {
+
+    static int HEIGHT = 600;
+    static int WIDTH = 800;
+    static final int maxRadius = 50;
+    static final int MAX_LEN = 100;
+    static final int MIN_LEN = 20;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        Label shapeLabel = new Label("Number of Shapes:");
+        TextField shapeTextField = new TextField();
+        Button generateButton = new Button("Generate");
+
+        Pane root = new Pane();
+
+        root.getChildren().addAll(circle, rectangle, line1, distance);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Assignment"); // Set the stage title
+
+        primaryStage.show(); // Display the stage
+
+    }
+
+    public void generateShapes() {
+
+        Random rand = new Random();
+
+        Circle circle = new Circle(maxRadius + rand.nextInt(WIDTH - maxRadius),
+                maxRadius + rand.nextInt(HEIGHT - maxRadius), rand.nextInt(maxRadius));
+
+        Rectangle rectangle = new Rectangle(rand.nextInt(WIDTH - MAX_LEN), rand.nextInt(HEIGHT - MAX_LEN),
+                MIN_LEN + rand.nextInt(MAX_LEN - MIN_LEN), MIN_LEN  + rand.nextInt(MAX_LEN - MIN_LEN));
+
+        circle.setFill(Color.LAVENDER);
+        rectangle.setFill(Color.ORANGE);
+    }
+
+    public void line(Circle circle, Rectangle rectangle) {
+
+        Line line1 = new Line(circle.getCenterX(), circle.getCenterY(), rectangle.getX() + (rectangle.getWidth() / 2),
+                rectangle.getY() + (rectangle.getHeight() / 2));
+
+        double length = Math.sqrt(Math.pow(line1.getEndX() - line1.getStartX(), 2) +
+                Math.pow(line1.getEndY() - line1.getStartY(), 2));
+
+        Text distance = new Text(String.valueOf(length));
+        distance.setX((line1.getEndX() + line1.getStartX())/2);
+        distance.setY((line1.getEndY() + line1.getStartY())/2);
+    }
+
+    /*public static boolean hasIntersection(Shape... shapes){
+        //implements here
+    }
+
+genBtn.setOnAction(event -> {
+        do{
+            //above code
+        }while(hasIntersection(/*pass the shapes maybe);
+    }*/
+}
