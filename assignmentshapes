@@ -1,4 +1,4 @@
-package com.example.demo;
+//insert package
 
 import javafx.application.Application;
 import javafx.scene.control.Button;
@@ -9,6 +9,7 @@ import javafx.scene.text.Text;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -17,52 +18,58 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Assignment2 extends Application {
 
-    static int HEIGHT = 600;
-    static int WIDTH = 800;
-    static final int maxRadius = 50;
+    static final int HEIGHT = 600;
+    static final int WIDTH = 800;
+    static final int MIN_RADIUS = 25;
+    static final int MAX_RADIUS = 70;
     static final int MAX_LEN = 100;
-    static final int MIN_LEN = 20;
-
-    public static void main(String[] args) {
-        launch(args);
+    static final int MIN_LEN = 40;
+    Pane root = new Pane();
+    
+    ArrayList<Shape> shapeList = new ArrayList<>();
+    Random rand = new Random();
+    
+    public void generateShapes(int n) {
+    	
+    	for(int i = 0; i < n; i++){
+    		
+    		if(rand.nextInt(2) == 1) {
+    			createCircle(i);
+    		}
+    		
+    		else {
+    			createRectangle(i);
+    		}
+    	}
     }
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        Label shapeLabel = new Label("Number of Shapes:");
-        TextField shapeTextField = new TextField();
-        Button generateButton = new Button("Generate");
-
-        Pane root = new Pane();
-
-        root.getChildren().addAll(circle, rectangle, line1, distance);
-        Scene scene = new Scene(root, WIDTH, HEIGHT);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Assignment"); // Set the stage title
-
-        primaryStage.show(); // Display the stage
-
+    
+    public void createCircle(int i) {
+    	Circle circle = new Circle(MIN_RADIUS + rand.nextInt(MAX_RADIUS - MIN_RADIUS));
+    	circle.setCenterX(MAX_RADIUS + rand.nextInt(WIDTH - 2 * MAX_RADIUS));
+    	circle.setCenterY(MAX_RADIUS + rand.nextInt(HEIGHT - 2 * MAX_RADIUS));
+    	
+    	circle.setFill(Color.rgb(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
+    	
+    	shapeList.add(circle);
+    	root.getChildren().add(shapeList.get(i));
     }
-
-    public void generateShapes() {
-
-        Random rand = new Random();
-
-        Circle circle = new Circle(maxRadius + rand.nextInt(WIDTH - maxRadius),
-                maxRadius + rand.nextInt(HEIGHT - maxRadius), rand.nextInt(maxRadius));
-
-        Rectangle rectangle = new Rectangle(rand.nextInt(WIDTH - MAX_LEN), rand.nextInt(HEIGHT - MAX_LEN),
-                MIN_LEN + rand.nextInt(MAX_LEN - MIN_LEN), MIN_LEN  + rand.nextInt(MAX_LEN - MIN_LEN));
-
-        circle.setFill(Color.LAVENDER);
-        rectangle.setFill(Color.ORANGE);
+    
+    public void createRectangle(int i) {
+    	Rectangle rectangle = new Rectangle(MIN_LEN + rand.nextInt(MAX_LEN - MIN_LEN), MIN_LEN  + rand.nextInt(MAX_LEN - MIN_LEN));
+    	rectangle.setX(rand.nextInt(WIDTH - MAX_LEN));
+    	rectangle.setY(rand.nextInt(HEIGHT - MAX_LEN));
+    	rectangle.setFill(Color.rgb(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
+    	
+    	shapeList.add(rectangle);
+    	root.getChildren().add(shapeList.get(i));
     }
-
-    public void line(Circle circle, Rectangle rectangle) {
+    
+    
+    public void drawLine(Circle circle, Rectangle rectangle) {
 
         Line line1 = new Line(circle.getCenterX(), circle.getCenterY(), rectangle.getX() + (rectangle.getWidth() / 2),
                 rectangle.getY() + (rectangle.getHeight() / 2));
@@ -75,13 +82,43 @@ public class Assignment2 extends Application {
         distance.setY((line1.getEndY() + line1.getStartY())/2);
     }
 
+    @Override
+    public void start(Stage primaryStage) {
+
+        Label numOfShapeLabel = new Label("Number of Shapes:");
+        TextField numOfShapeTextField = new TextField();
+        numOfShapeTextField.setPrefWidth(30);
+
+        HBox numOfShapeBox = new HBox(10);
+        numOfShapeBox.getChildren().addAll(numOfShapeLabel, numOfShapeTextField);
+        numOfShapeBox.setLayoutX(330);
+        numOfShapeBox.setLayoutY(520);
+
+        Button generateButton = new Button("Generate");
+        generateButton.setLayoutX(360);
+        generateButton.setLayoutY(550);
+        
+        generateButton.setOnAction(event -> {
+        	generateShapes(Integer.parseInt(numOfShapeTextField.getText()));
+        	numOfShapeBox.setVisible(false);
+        	generateButton.setVisible(false);
+        });
+
+        root.getChildren().addAll(generateButton, numOfShapeBox);
+        Scene scene = new Scene(root, WIDTH, HEIGHT);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Assignment"); 
+        primaryStage.setResizable(false);
+        primaryStage.show(); 
+    }
+    
     /*public static boolean hasIntersection(Shape... shapes){
         //implements here
-    }
 
-genBtn.setOnAction(event -> {
-        do{
-            //above code
-        }while(hasIntersection(/*pass the shapes maybe);
+
     }*/
+    
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
